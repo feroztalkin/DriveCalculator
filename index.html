@@ -2,178 +2,381 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>FreightRoute India - Fuel & Route Calc</title>
-        <style>
-            * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-                body { background-color: #121820; color: #e2e8f0; margin: 0; padding: 16px; display: flex; justify-content: center; }
-                    .card { background: #1a222d; border-radius: 14px; padding: 20px; width: 100%; max-width: 480px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
-                        h2 { margin: 0 0 16px; font-size: 1.25rem; color: #38bdf8; text-align: center; }
-                            .form-group { margin-bottom: 14px; position: relative; }
-                                label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; display: block; margin-bottom: 6px; }
-                                    input { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 0.95rem; }
-                                        input:focus { outline: none; border-color: #38bdf8; }
-                                            .suggestions { position: absolute; top: 100%; left: 0; right: 0; background: #1e293b; border: 1px solid #334155; border-radius: 8px; max-height: 180px; overflow-y: auto; z-index: 10; margin-top: 4px; padding: 0; list-style: none; }
-                                                .suggestions li { padding: 10px 12px; font-size: 0.85rem; border-bottom: 1px solid #334155; cursor: pointer; }
-                                                    .suggestions li:hover { background: #334155; }
-                                                        .row { display: flex; gap: 12px; }
-                                                            .row .form-group { flex: 1; }
-                                                                button { width: 100%; padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 8px; }
-                                                                    button:hover { background: #1d4ed8; }
-                                                                        .results { margin-top: 20px; padding: 16px; background: #0f172a; border-radius: 10px; border: 1px solid #1e293b; }
-                                                                            .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1e293b; font-size: 0.9rem; }
-                                                                                .stat-row:last-child { border-bottom: none; }
-                                                                                    .stat-val { font-weight: bold; color: #38bdf8; }
-                                                                                        .highlight { color: #4ade80; font-size: 1.1rem; }
-                                                                                          </style>
-                                                                                          </head>
-                                                                                          <body>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FreightRoute India</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --input-bg: #0f172a;
+      --border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --green: #22c55e;
+    }
 
-                                                                                          <div class="card">
-                                                                                            <h2>🚚 FreightRoute India</h2>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
 
-                                                                                              <!-- Origin -->
-                                                                                                <div class="form-group">
-                                                                                                    <label>Origin (Place in India)</label>
-                                                                                                        <input type="text" id="origin" placeholder="Type city or area..." autocomplete="off">
-                                                                                                            <ul id="origin-list" class="suggestions" style="display:none;"></ul>
-                                                                                                              </div>
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-                                                                                                                <!-- Destination -->
-                                                                                                                  <div class="form-group">
-                                                                                                                      <label>Destination (Place in India)</label>
-                                                                                                                          <input type="text" id="destination" placeholder="Type destination..." autocomplete="off">
-                                                                                                                              <ul id="dest-list" class="suggestions" style="display:none;"></ul>
-                                                                                                                                </div>
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
 
-                                                                                                                                  <!-- Inputs -->
-                                                                                                                                    <div class="row">
-                                                                                                                                        <div class="form-group">
-                                                                                                                                              <label>Diesel Price (₹/L)</label>
-                                                                                                                                                    <input type="number" id="fuelPrice" value="98.50" step="0.1">
-                                                                                                                                                        </div>
-                                                                                                                                                            <div class="form-group">
-                                                                                                                                                                  <label>Mileage (km/L)</label>
-                                                                                                                                                                        <input type="number" id="mileage" value="2.5" step="0.1">
-                                                                                                                                                                            </div>
-                                                                                                                                                                              </div>
+    .title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #38bdf8;
+      margin-bottom: 24px;
+    }
 
-                                                                                                                                                                                <button id="calcBtn" onclick="calculateRoute()">Calculate Route & Cost</button>
+    .form-group {
+      position: relative;
+      margin-bottom: 16px;
+    }
 
-                                                                                                                                                                                  <!-- Output -->
-                                                                                                                                                                                    <div class="results" id="resultsBlock" style="display:none;">
-                                                                                                                                                                                        <div class="stat-row"><span>Road Distance:</span><span class="stat-val" id="resDist">-</span></div>
-                                                                                                                                                                                            <div class="stat-row"><span>Normal Car Duration:</span><span class="stat-val" id="resDuration">-</span></div>
-                                                                                                                                                                                                <div class="stat-row"><span>Heavy Truck (at 50 km/h):</span><span class="stat-val" id="resTruckDuration">-</span></div>
-                                                                                                                                                                                                    <div class="stat-row"><span>Total Diesel Needed:</span><span class="stat-val" id="resFuel">-</span></div>
-                                                                                                                                                                                                        <div class="stat-row"><span>Total Fuel Cost:</span><span class="stat-val highlight" id="resCost">-</span></div>
-                                                                                                                                                                                                          </div>
-                                                                                                                                                                                                          </div>
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
 
-                                                                                                                                                                                                          <script>
-                                                                                                                                                                                                          let startCoords = null;
-                                                                                                                                                                                                          let endCoords = null;
+    input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
 
-                                                                                                                                                                                                          // India-only autocomplete using Nominatim OpenStreetMap
-                                                                                                                                                                                                          function setupAutocomplete(inputId, listId, onSelect) {
-                                                                                                                                                                                                            const input = document.getElementById(inputId);
-                                                                                                                                                                                                              const list = document.getElementById(listId);
-                                                                                                                                                                                                                let debounceTimer;
+    input:focus {
+      border-color: #38bdf8;
+    }
 
-                                                                                                                                                                                                                  input.addEventListener('input', () => {
-                                                                                                                                                                                                                      clearTimeout(debounceTimer);
-                                                                                                                                                                                                                          const query = input.value.trim();
-                                                                                                                                                                                                                              if (query.length < 3) {
-                                                                                                                                                                                                                                    list.style.display = 'none';
-                                                                                                                                                                                                                                          return;
-                                                                                                                                                                                                                                              }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
 
-                                                                                                                                                                                                                                                  debounceTimer = setTimeout(async () => {
-                                                                                                                                                                                                                                                        try {
-                                                                                                                                                                                                                                                                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=in&q=${encodeURIComponent(query)}`);
-                                                                                                                                                                                                                                                                        const data = await res.json();
-                                                                                                                                                                                                                                                                                list.innerHTML = '';
-                                                                                                                                                                                                                                                                                        if (data.length > 0) {
-                                                                                                                                                                                                                                                                                                  list.style.display = 'block';
-                                                                                                                                                                                                                                                                                                            data.slice(0, 5).forEach(item => {
-                                                                                                                                                                                                                                                                                                                        const li = document.createElement('li');
-                                                                                                                                                                                                                                                                                                                                    li.textContent = item.display_name;
-                                                                                                                                                                                                                                                                                                                                                li.onclick = () => {
-                                                                                                                                                                                                                                                                                                                                                              input.value = item.display_name.split(',')[0];
-                                                                                                                                                                                                                                                                                                                                                                            list.style.display = 'none';
-                                                                                                                                                                                                                                                                                                                                                                                          onSelect({ lat: item.lat, lon: item.lon });
-                                                                                                                                                                                                                                                                                                                                                                                                      };
-                                                                                                                                                                                                                                                                                                                                                                                                                  list.appendChild(li);
-                                                                                                                                                                                                                                                                                                                                                                                                                            });
-                                                                                                                                                                                                                                                                                                                                                                                                                                    } else {
-                                                                                                                                                                                                                                                                                                                                                                                                                                              list.style.display = 'none';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                      }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                            } catch (e) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    console.error(e);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                              }, 350);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                });
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }
+    .suggestions-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-top: 4px;
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 100;
+      list-style: none;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                setupAutocomplete('origin', 'origin-list', coords => startCoords = coords);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                setupAutocomplete('destination', 'dest-list', coords => endCoords = coords);
+    .suggestions-list li {
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                // Routing calculation using public OSRM engine
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                async function calculateRoute() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  if (!startCoords || !endCoords) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      alert("Please select both places from the dropdown suggestions.");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          return;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
+    .suggestions-list li:hover {
+      background: #334155;
+    }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              const btn = document.getElementById('calcBtn');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                btn.textContent = "Calculating...";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  btn.disabled = true;
+    .btn {
+      width: 100%;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background-color 0.2s, opacity 0.2s;
+    }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    try {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        const url = `https://router.project-osrm.org/route/v1/driving/${startCoords.lon},${startCoords.lat};${endCoords.lon},${endCoords.lat}?overview=false`;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            const res = await fetch(url);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                const data = await res.json();
+    .btn:hover {
+      background-color: var(--accent-hover);
+    }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    if (!data.routes || data.routes.length === 0) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          alert("No route found between these locations.");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                return;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        const distanceKm = data.routes[0].distance / 1000;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            const durationSeconds = data.routes[0].duration;
+    .results {
+      margin-top: 24px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                // Time conversions
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    const normalHours = Math.floor(durationSeconds / 3600);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        const normalMinutes = Math.round((durationSeconds % 3600) / 60);
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+    }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            // 50 km/h heavy truck calculation
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                const truckHoursTotal = distanceKm / 50;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    const truckHours = Math.floor(truckHoursTotal);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        const truckMinutes = Math.round((truckHoursTotal - truckHours) * 60);
+    .result-label {
+      color: var(--text-muted);
+    }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            // Fuel & Cost calculations
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                const mileage = parseFloat(document.getElementById('mileage').value) || 2.5;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    const fuelPrice = parseFloat(document.getElementById('fuelPrice').value) || 98.5;
+    .result-val {
+      font-weight: 600;
+      color: #38bdf8;
+    }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        const totalLitres = distanceKm / mileage;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            const totalCost = totalLitres * fuelPrice;
+    .result-val.cost {
+      color: var(--green);
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                // Render results
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    document.getElementById('resDist').textContent = `${distanceKm.toFixed(1)} km`;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        document.getElementById('resDuration').textContent = `${normalHours}h ${normalMinutes}m`;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            document.getElementById('resTruckDuration').textContent = `${truckHours}h ${truckMinutes}m`;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                document.getElementById('resFuel').textContent = `${totalLitres.toFixed(1)} Litres`;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    document.getElementById('resCost').textContent = `₹ ${Math.round(totalCost).toLocaleString('en-IN')}`;
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        document.getElementById('resultsBlock').style.display = 'block';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          } catch (err) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              alert("Error finding route. Please verify your connection.");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } finally {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    btn.textContent = "Calculate Route & Cost";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        btn.disabled = false;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+  <div class="card">
+    <h2 class="title">🚚 FreightRoute India</h2>
+
+    <!-- Origin Input -->
+    <div class="form-group">
+      <label for="origin">Origin (Place in India)</label>
+      <input type="text" id="origin" placeholder="e.g. Hyderabad" autocomplete="off" value="Hyderabad" />
+      <ul id="origin-suggestions" class="suggestions-list hidden"></ul>
+    </div>
+
+    <!-- Destination Input -->
+    <div class="form-group">
+      <label for="destination">Destination (Place in India)</label>
+      <input type="text" id="destination" placeholder="e.g. Bengaluru" autocomplete="off" value="Bengaluru" />
+      <ul id="dest-suggestions" class="suggestions-list hidden"></ul>
+    </div>
+
+    <!-- Rates & Specs -->
+    <div class="row">
+      <div class="form-group">
+        <label for="fuelPrice">Diesel Price (₹/L)</label>
+        <input type="number" id="fuelPrice" step="0.1" value="95" />
+      </div>
+      <div class="form-group">
+        <label for="mileage">Mileage (KM/L)</label>
+        <input type="number" id="mileage" step="0.1" value="2.5" />
+      </div>
+    </div>
+
+    <button id="calculateBtn" class="btn" onclick="calculateRoute()">Calculate Route & Cost</button>
+
+    <!-- Results Panel -->
+    <div class="results" id="results">
+      <div class="result-row">
+        <span class="result-label">Road Distance:</span>
+        <span class="result-val" id="resDistance">-</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Normal Car Duration:</span>
+        <span class="result-val" id="resCarDuration">-</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Heavy Truck (at 50 km/h):</span>
+        <span class="result-val" id="resTruckDuration">-</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Total Diesel Needed:</span>
+        <span class="result-val" id="resDieselNeeded">-</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Total Fuel Cost:</span>
+        <span class="result-val cost" id="resFuelCost">-</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Instant Cache for Top Freight Locations (0ms network delay)
+    const LOCAL_CACHE = {
+      "hyderabad": { lat: 17.3850, lon: 78.4867, name: "Hyderabad, Telangana" },
+      "bengaluru": { lat: 12.9716, lon: 77.5946, name: "Bengaluru, Karnataka" },
+      "bangalore": { lat: 12.9716, lon: 77.5946, name: "Bengaluru, Karnataka" },
+      "chennai": { lat: 13.0827, lon: 80.2707, name: "Chennai, Tamil Nadu" },
+      "mumbai": { lat: 19.0760, lon: 72.8777, name: "Mumbai, Maharashtra" },
+      "delhi": { lat: 28.6139, lon: 77.2090, name: "Delhi" },
+      "pune": { lat: 18.5204, lon: 73.8567, name: "Pune, Maharashtra" },
+      "kolkata": { lat: 22.5726, lon: 88.3639, name: "Kolkata, West Bengal" },
+      "ahmedabad": { lat: 23.0225, lon: 72.5714, name: "Ahmedabad, Gujarat" },
+      "vijayawada": { lat: 16.5062, lon: 80.6480, name: "Vijayawada, Andhra Pradesh" },
+      "nagpur": { lat: 21.1458, lon: 79.0882, name: "Nagpur, Maharashtra" }
+    };
+
+    // In-memory cache for dynamic queries to avoid repeat network calls
+    const geocodeMemory = new Map();
+
+    async function geocode(query) {
+      const clean = query.trim().toLowerCase();
+      if (!clean) return null;
+
+      // Check instant dictionary
+      if (LOCAL_CACHE[clean]) {
+        return LOCAL_CACHE[clean];
+      }
+
+      // Check runtime memory cache
+      if (geocodeMemory.has(clean)) {
+        return geocodeMemory.get(clean);
+      }
+
+      // Fast Photon (OSM-based elastic search CDN)
+      try {
+        const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=1`);
+        const data = await res.json();
+        if (data && data.features && data.features.length > 0) {
+          const feature = data.features[0];
+          const coords = {
+            lon: feature.geometry.coordinates[0],
+            lat: feature.geometry.coordinates[1],
+            name: feature.properties.name || query
+          };
+          geocodeMemory.set(clean, coords);
+          return coords;
+        }
+      } catch (e) {
+        console.warn("Photon geocode failed, falling back to Nominatim:", e);
+      }
+
+      // Fallback
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=in&limit=1&q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const coords = {
+            lat: parseFloat(data[0].lat),
+            lon: parseFloat(data[0].lon),
+            name: data[0].display_name
+          };
+          geocodeMemory.set(clean, coords);
+          return coords;
+        }
+      } catch (err) {
+        console.error("Geocoding error:", err);
+      }
+
+      return null;
+    }
+
+    function formatDuration(totalMinutes) {
+      const hours = Math.floor(totalMinutes / 60);
+      const mins = Math.round(totalMinutes % 60);
+      return `${hours}h ${mins}m`;
+    }
+
+    async function calculateRoute() {
+      const originQuery = document.getElementById("origin").value.trim();
+      const destQuery = document.getElementById("destination").value.trim();
+      const fuelPrice = parseFloat(document.getElementById("fuelPrice").value) || 0;
+      const mileage = parseFloat(document.getElementById("mileage").value) || 1;
+
+      const btn = document.getElementById("calculateBtn");
+
+      if (!originQuery || !destQuery) {
+        alert("Please enter both Origin and Destination.");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = "Finding fastest route...";
+
+      try {
+        // Parallel Geocoding (Both queries resolve concurrently)
+        const [originLoc, destLoc] = await Promise.all([
+          geocode(originQuery),
+          geocode(destQuery)
+        ]);
+
+        if (!originLoc || !destLoc) {
+          alert("Could not locate one or both places. Please verify city names.");
+          return;
+        }
+
+        // Fetch Route from OSRM
+        const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${originLoc.lon},${originLoc.lat};${destLoc.lon},${destLoc.lat}?overview=false`;
+        const routeRes = await fetch(osrmUrl);
+        const routeData = await routeRes.json();
+
+        if (!routeData.routes || routeData.routes.length === 0) {
+          alert("No drivable route found between these locations.");
+          return;
+        }
+
+        const route = routeData.routes[0];
+        const distanceKm = route.distance / 1000;
+        const carMinutes = route.duration / 60;
+
+        // Truck calculation at 50 km/h
+        const truckHoursDecimal = distanceKm / 50;
+        const truckTotalMinutes = truckHoursDecimal * 60;
+
+        // Fuel calculations
+        const dieselNeeded = distanceKm / mileage;
+        const totalFuelCost = Math.round(dieselNeeded * fuelPrice);
+
+        // Update UI
+        document.getElementById("resDistance").innerText = `${distanceKm.toFixed(1)} km`;
+        document.getElementById("resCarDuration").innerText = formatDuration(carMinutes);
+        document.getElementById("resTruckDuration").innerText = formatDuration(truckTotalMinutes);
+        document.getElementById("resDieselNeeded").innerText = `${dieselNeeded.toFixed(1)} Litres`;
+        document.getElementById("resFuelCost").innerText = `₹ ${totalFuelCost.toLocaleString('en-IN')}`;
+
+      } catch (err) {
+        console.error(err);
+        alert("An error occurred while calculating the route. Please check your network connection.");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Calculate Route & Cost";
+      }
+    }
+  </script>
+</body>
+</html>
