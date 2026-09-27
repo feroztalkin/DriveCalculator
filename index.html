@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FreightRoute India - Highway Logistics Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>FreightRoute India - Highway Logistics Suite</title>
   <style>
     :root {
-      --bg: #0f172a;
+      --bg: #0b1120;
       --card-bg: #1e293b;
       --input-bg: #0f172a;
       --border: #334155;
@@ -22,6 +22,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
@@ -30,9 +31,9 @@
       color: var(--text-main);
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
-      padding: 20px;
+      padding: 12px;
     }
 
     .card {
@@ -40,45 +41,83 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       width: 100%;
-      max-width: 500px;
-      padding: 24px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      max-width: 480px;
+      padding: 16px;
+      margin-top: 6px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
     }
 
     .title {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       color: #38bdf8;
-      margin-bottom: 20px;
-    }
-
-    .form-group {
-      position: relative;
       margin-bottom: 14px;
     }
 
-    label {
+    /* Highly Visible Mobile Tab Bar */
+    .tab-bar {
       display: flex;
-      justify-content: space-between;
+      background: #090e1a;
+      border: 2px solid #2563eb;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 18px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 6px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
       font-size: 0.72rem;
       font-weight: 600;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     input, select {
       width: 100%;
       background: var(--input-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 11px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
       color: var(--text-main);
-      font-size: 0.95rem;
+      font-size: 1rem;
       outline: none;
       transition: border-color 0.2s;
     }
@@ -90,36 +129,39 @@
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
     }
 
     .checkbox-group {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin: 10px 0 16px;
+      gap: 10px;
+      margin: 8px 0 12px;
       font-size: 0.85rem;
-      color: var(--text-muted);
+      color: var(--text-main);
       cursor: pointer;
     }
 
     .checkbox-group input {
-      width: auto;
+      width: 20px;
+      height: 20px;
       accent-color: var(--accent);
       cursor: pointer;
     }
 
     .btn {
       width: 100%;
+      min-height: 48px;
       background-color: var(--accent);
-      color: white;
+      color: #ffffff;
       border: none;
-      border-radius: 8px;
-      padding: 13px;
-      font-size: 0.95rem;
-      font-weight: 600;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: background-color 0.2s, opacity 0.2s;
+      margin-top: 4px;
+      transition: background-color 0.2s;
     }
 
     .btn:hover {
@@ -132,19 +174,19 @@
     }
 
     .results {
-      margin-top: 22px;
+      margin-top: 18px;
       border-top: 1px solid var(--border);
-      padding-top: 16px;
+      padding-top: 14px;
       display: flex;
       flex-direction: column;
-      gap: 11px;
+      gap: 10px;
     }
 
     .result-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
     }
 
     .result-label {
@@ -163,11 +205,11 @@
     }
 
     .note {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
       margin-top: 12px;
-      line-height: 1.35;
-      border-left: 2px solid var(--amber);
+      line-height: 1.4;
+      border-left: 3px solid var(--amber);
       padding-left: 8px;
     }
   </style>
@@ -177,83 +219,189 @@
   <div class="card">
     <h2 class="title">🚚 FreightRoute India</h2>
 
-    <div class="form-group">
-      <label for="origin">Origin (Place in India)</label>
-      <input type="text" id="origin" placeholder="e.g. Hyderabad" value="Hyderabad" />
+    <!-- Prominent Mobile Tab Switcher -->
+    <div class="tab-bar">
+      <button type="button" class="tab-btn active" onclick="switchTab('routeTab', this)">📍 Route & ETA</button>
+      <button type="button" class="tab-btn" onclick="switchTab('odometerTab', this)">⏱️ Meter Tracker</button>
     </div>
 
-    <div class="form-group">
-      <label for="destination">Destination (Place in India)</label>
-      <input type="text" id="destination" placeholder="e.g. Bengaluru" value="Bengaluru" />
-    </div>
-
-    <div class="row">
+    <!-- TAB 1: Route & ETA Planner -->
+    <div id="routeTab" class="tab-pane active">
       <div class="form-group">
-        <label for="fuelPrice">Diesel Price (₹/L)</label>
-        <input type="number" id="fuelPrice" step="0.5" value="95" />
+        <label for="origin">Origin (Place in India)</label>
+        <input type="text" id="origin" placeholder="e.g. Hyderabad" value="Hyderabad" autocorrect="off" autocapitalize="words" />
       </div>
+
       <div class="form-group">
-        <label for="mileage">Mileage (KM/L)</label>
-        <input type="number" id="mileage" step="0.1" value="2.5" />
+        <label for="destination">Destination (Place in India)</label>
+        <input type="text" id="destination" placeholder="e.g. Bengaluru" value="Bengaluru" autocorrect="off" autocapitalize="words" />
       </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="fuelPrice">Diesel (₹/L)</label>
+          <input type="number" id="fuelPrice" step="0.5" value="95" inputmode="decimal" />
+        </div>
+        <div class="form-group">
+          <label for="mileage">Mileage (KM/L)</label>
+          <input type="number" id="mileage" step="0.1" value="2.5" inputmode="decimal" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="truckSpeed">Truck Avg Speed</label>
+          <select id="truckSpeed">
+            <option value="45">45 km/h (Loaded)</option>
+            <option value="50" selected>50 km/h (Multi-Axle)</option>
+            <option value="55">55 km/h (Expressway)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="trafficFactor">Traffic Factor</label>
+          <select id="trafficFactor">
+            <option value="1.25">+25% (Highway)</option>
+            <option value="1.30" selected>+30% (Standard NH)</option>
+            <option value="1.40">+40% (Peak/Rain)</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="checkbox-group">
+        <input type="checkbox" id="includeBreaks" checked onchange="toggleBreakInputs()" />
+        <span>Include driver rest halts</span>
+      </label>
+
+      <!-- Editable Rest Halt Configuration -->
+      <div class="row" id="breakSettingsRow">
+        <div class="form-group">
+          <label for="breakDuration">Break (Minutes)</label>
+          <input type="number" id="breakDuration" value="45" min="5" step="5" inputmode="numeric" />
+        </div>
+        <div class="form-group">
+          <label for="driveInterval">Every (Hours)</label>
+          <input type="number" id="driveInterval" value="4.5" min="1" step="0.5" inputmode="decimal" />
+        </div>
+      </div>
+
+      <button id="calculateBtn" class="btn" onclick="calculateRoute()">Calculate Route & Cost</button>
+
+      <div class="results">
+        <div class="result-row">
+          <span class="result-label">Road Distance:</span>
+          <span class="result-val" id="resDistance">-</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Car Duration (Traffic Est.):</span>
+          <span class="result-val" id="resCarDuration">-</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Commercial Truck ETA:</span>
+          <span class="result-val" id="resTruckDuration">-</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Total Diesel Needed:</span>
+          <span class="result-val" id="resDieselNeeded">-</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Total Fuel Cost:</span>
+          <span class="result-val cost" id="resFuelCost">-</span>
+        </div>
+      </div>
+
+      <p class="note">
+        *Car ETA includes highway toll plaza wait times. Truck ETA calculates breaks at specified intervals.
+      </p>
     </div>
 
-    <div class="row">
-      <div class="form-group">
-        <label for="truckSpeed">Truck Avg Speed</label>
-        <select id="truckSpeed">
-          <option value="45">45 km/h (Loaded / Mountain)</option>
-          <option value="50" selected>50 km/h (Standard Multi-axle)</option>
-          <option value="55">55 km/h (Express Highway / Light)</option>
-        </select>
+    <!-- TAB 2: Odometer & Fuel Consumption Tracker -->
+    <div id="odometerTab" class="tab-pane">
+      <div class="row">
+        <div class="form-group">
+          <label for="meterStart">Initial Meter (KM)</label>
+          <input type="number" id="meterStart" placeholder="e.g. 102500" inputmode="numeric" />
+        </div>
+        <div class="form-group">
+          <label for="meterEnd">Final Meter (KM)</label>
+          <input type="number" id="meterEnd" placeholder="e.g. 103075" inputmode="numeric" />
+        </div>
       </div>
-      <div class="form-group">
-        <label for="buffer">Real-world Traffic</label>
-        <select id="trafficFactor">
-          <option value="1.25">Highway (+25% buffer)</option>
-          <option value="1.30" selected>Standard (+30% toll/traffic)</option>
-          <option value="1.40">Heavy (+40% peak city/rain)</option>
-        </select>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="meterMileage">Mileage (KM/L)</label>
+          <input type="number" id="meterMileage" step="0.1" value="2.5" inputmode="decimal" />
+        </div>
+        <div class="form-group">
+          <label for="meterDieselPrice">Diesel (₹/L)</label>
+          <input type="number" id="meterDieselPrice" step="0.5" value="95" inputmode="decimal" />
+        </div>
       </div>
+
+      <button class="btn" onclick="calculateMeterReading()">Calculate Fuel & Traveled</button>
+
+      <div class="results">
+        <div class="result-row">
+          <span class="result-label">Total Traveled:</span>
+          <span class="result-val" id="resMeterDistance">-</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Total Diesel Burned:</span>
+          <span class="result-val" id="resMeterDiesel">-</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Total Fuel Cost:</span>
+          <span class="result-val cost" id="resMeterCost">-</span>
+        </div>
+      </div>
+
+      <p class="note">
+        *Calculates trip distance directly from odometer differences and fuel cost based on vehicle mileage.
+      </p>
     </div>
-
-    <label class="checkbox-group">
-      <input type="checkbox" id="includeBreaks" checked />
-      Include driver rest halts (45m per 4.5h driving)
-    </label>
-
-    <button id="calculateBtn" class="btn" onclick="calculateRoute()">Calculate Route & Cost</button>
-
-    <div class="results" id="results">
-      <div class="result-row">
-        <span class="result-label">Road Distance:</span>
-        <span class="result-val" id="resDistance">-</span>
-      </div>
-      <div class="result-row">
-        <span class="result-label">Car Duration (Traffic Est.):</span>
-        <span class="result-val" id="resCarDuration">-</span>
-      </div>
-      <div class="result-row">
-        <span class="result-label">Commercial Truck ETA:</span>
-        <span class="result-val" id="resTruckDuration">-</span>
-      </div>
-      <div class="result-row">
-        <span class="result-label">Total Diesel Needed:</span>
-        <span class="result-val" id="resDieselNeeded">-</span>
-      </div>
-      <div class="result-row">
-        <span class="result-label">Total Fuel Cost:</span>
-        <span class="result-val cost" id="resFuelCost">-</span>
-      </div>
-    </div>
-
-    <p class="note">
-      *Car durations calibrated with Indian NH toll plaza wait times and bypass real-world delays.
-    </p>
   </div>
 
   <script>
-    // Optimized coordinates matching key logistics hubs
+    // Tab switching
+    function switchTab(tabId, triggerBtn) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      triggerBtn.classList.add('active');
+    }
+
+    function toggleBreakInputs() {
+      const isChecked = document.getElementById("includeBreaks").checked;
+      document.getElementById("breakSettingsRow").style.display = isChecked ? "grid" : "none";
+    }
+
+    // Tab 2: Meter Difference & Fuel Calculation
+    function calculateMeterReading() {
+      const start = parseFloat(document.getElementById("meterStart").value);
+      const end = parseFloat(document.getElementById("meterEnd").value);
+      const mileage = parseFloat(document.getElementById("meterMileage").value) || 2.5;
+      const price = parseFloat(document.getElementById("meterDieselPrice").value) || 95;
+
+      if (isNaN(start) || isNaN(end)) {
+        alert("Please enter both Initial and Final meter readings.");
+        return;
+      }
+
+      if (end < start) {
+        alert("Final reading cannot be less than initial reading.");
+        return;
+      }
+
+      const distanceTraveled = end - start;
+      const dieselConsumed = distanceTraveled / mileage;
+      const totalCost = Math.round(dieselConsumed * price);
+
+      document.getElementById("resMeterDistance").innerText = `${distanceTraveled.toFixed(1)} km`;
+      document.getElementById("resMeterDiesel").innerText = `${dieselConsumed.toFixed(1)} Litres`;
+      document.getElementById("resMeterCost").innerText = `₹ ${totalCost.toLocaleString('en-IN')}`;
+    }
+
+    // Preloaded locations for 0ms lookup
     const LOCAL_HUBS = {
       "hyderabad": { lat: 17.3850, lon: 78.4867 },
       "bengaluru": { lat: 12.9716, lon: 77.5946 },
@@ -289,7 +437,7 @@
           return coords;
         }
       } catch (e) {
-        console.warn("Photon lookup failed, trying backup", e);
+        console.warn("Photon lookup failed, trying fallback", e);
       }
 
       const backup = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=in&limit=1&q=${encodeURIComponent(placeName)}`);
@@ -316,12 +464,15 @@
       const truckSpeed = parseFloat(document.getElementById("truckSpeed").value) || 50;
       const trafficFactor = parseFloat(document.getElementById("trafficFactor").value) || 1.30;
       const includeBreaks = document.getElementById("includeBreaks").checked;
+      
+      const breakDuration = parseFloat(document.getElementById("breakDuration").value) || 45;
+      const driveInterval = parseFloat(document.getElementById("driveInterval").value) || 4.5;
 
       const btn = document.getElementById("calculateBtn");
       if (!origin || !dest) return;
 
       btn.disabled = true;
-      btn.innerText = "Computing optimal route...";
+      btn.innerText = "Finding fastest route...";
 
       try {
         const [origCoord, destCoord] = await Promise.all([geocode(origin), geocode(dest)]);
@@ -343,20 +494,20 @@
         const route = data.routes[0];
         const distKm = route.distance / 1000;
 
-        // Realistic Car Time (Applying highway factor for realistic ETA)
+        // Realistic Car Time (Applying calibrated highway buffer)
         const rawCarMinutes = route.duration / 60;
         const realisticCarMinutes = rawCarMinutes * trafficFactor;
 
-        // Commercial Truck calculation
+        // Commercial Truck duration calculation
         const pureTruckHours = distKm / truckSpeed;
         let truckTotalMinutes = pureTruckHours * 60;
 
-        if (includeBreaks) {
-          const breaksCount = Math.floor(pureTruckHours / 4.5);
-          truckTotalMinutes += (breaksCount * 45); // 45-minute pause per 4.5 hrs
+        if (includeBreaks && driveInterval > 0) {
+          const breaksCount = Math.floor(pureTruckHours / driveInterval);
+          truckTotalMinutes += (breaksCount * breakDuration);
         }
 
-        // Fuel and Costs
+        // Fuel calculations
         const litres = distKm / mileage;
         const cost = Math.round(litres * price);
 
@@ -368,7 +519,7 @@
 
       } catch (err) {
         console.error(err);
-        alert("Failed to compute route. Check your network connection.");
+        alert("Failed to compute route. Check your internet connection.");
       } finally {
         btn.disabled = false;
         btn.innerText = "Calculate Route & Cost";
